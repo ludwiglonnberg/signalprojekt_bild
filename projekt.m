@@ -3,10 +3,10 @@ load('rawData.mat');
 load('hrf_1ms.mat'); 
 
 % Centrera k-space
-k_space = fftshift(k_space);
+kSpace = fftshift(kSpace);
 
 % Skapa spatiala bilder från 3D raw data och invers fourier-transform
-iFFT_images = fftshift(ifftn(ifftshift(k_space)));
+iFFT_images = fftshift(ifftn(ifftshift(kSpace)));
 
 % Gaussiskt lågpassfilter för att filtrera brus (justera a?)
 [x, y, z] = meshgrid(linspace(-1, 1, 128), linspace(-1, 1, 128), linspace(-1, 1, 37));
@@ -14,7 +14,7 @@ a = 0.1;
 filter = exp(-(x.^2*a^2 + y.^2*a^2 + z.^2*a^2) / (2*a^3));
 
 % Applicera filtret i frekvensplanet
-k_space_filter = k_space .* filter;
+k_space_filter = kSpace .* filter;
 iFFT_filtered = fftshift(ifftn(ifftshift(k_space_filter)));
 
 % Aktiveringssignal
