@@ -10,7 +10,7 @@ iFFT_images = fftshift(ifftn(ifftshift(kSpace)));
 
 % Gaussiskt lågpassfilter för att filtrera brus (justera a?)
 [x, y, z] = meshgrid(linspace(-1, 1, 128), linspace(-1, 1, 128), linspace(-1, 1, 37));
-a = 0.1;
+a = 0.05;
 filter = exp(-(x.^2*a^2 + y.^2*a^2 + z.^2*a^2) / (2*a^3));
 
 % Applicera filtret i frekvensplanet
@@ -39,13 +39,13 @@ activation_convolved = conv(activation_signal, hrf, 'same');
 fMRI_matrix = reshape(abs(iFFT_filtered), [], 160);
 
 % Hitta korrelationen mellan voxlar och aktiveringssignal
-correlation_map = corr(fMRI_matrix', activation_convolved');
+correlation_values = corr(fMRI_matrix', activation_convolved');
 
 % Omforma korrelationsmappen till samma storlek som originalbilden
-correlation_map = reshape(correlation_map, [128, 128, 37]);
+correlation_map = reshape(correlation_values, [128, 128, 37]);
 
 % Ange tröskelvärde för korrelationen (bestäm gräns för aktiverade voxlar, justera threshold?)
-threshold = 0.3;
+threshold = 0.5;
 activated_voxels = correlation_map > threshold;
 
 % Skapa en meshgrid med (bild)storleken för varje dimension
@@ -68,11 +68,35 @@ zlabel('Z (mm)');
 axis equal;
 view(3);
 
-
-
-% Öka den spatiala upplösningen genom “zero-padding”. Använd Matlabfunktionen padarray. 
+% Öka den spatiala upplösningen genom “zero-padding”. Använd
+% Matlabfunktionen padarray. (Detta verkar vara VG-nivå, ska vi göra det?)
     % Spec_Im_padded=padarray(Spec_Im,[x y z]);
 
+
 % Undersök correlationen bättre så vi kan redovisa det
+% (känns som att detta är fett lågt, har jag gjort fel?
+mean_corr = mean(correlation_values);
+std_corr = std(correlation_values);
+disp(['Medelvärde: ', num2str(mean_corr)]);
+disp(['Standardavvikelse: ', num2str(std_corr)]);
 
 % Visualisera mer resultat
+
+%plottar mittenslicen av ofiltrerad och filtrerad
+mid_slice = round(size(iFFT_images,3)/2);
+figure;
+subplot(1,2,1);
+imagesc(abs(iFFT_images(:,:,mid_slice))); 
+title('Ofiltrerad');
+
+subplot(1,2,2);
+imagesc(abs(iFFT_filtered(:,:,mid_slice))); 
+title('Filtrerad');
+
+figure;
+histogram(correlation_values,50); 
+xlabel('Korrelationsvärde');
+ylabel('Antal voxlar');
+title('Korrelation mellan voxlar och aktiveringssignal');
+
+
