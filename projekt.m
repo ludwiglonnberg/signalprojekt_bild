@@ -8,7 +8,7 @@ kSpace = fftshift(kSpace);
 % Skapa spatiala bilder från 3D raw data och invers fourier-transform
 iFFT_images = fftshift(ifftn(ifftshift(kSpace)));
 
-% Gaussiskt lågpassfilter för att filtrera brus (justera a?)
+% Gaussiskt lågpassfilter för att filtrera brus 
 [x, y, z] = meshgrid(linspace(-1, 1, 128), linspace(-1, 1, 128), linspace(-1, 1, 37));
 a = 0.08;
 filter = exp(-(x.^2*a^2 + y.^2*a^2 + z.^2*a^2) / (2*a^3));
@@ -44,7 +44,7 @@ correlation_values = corr(fMRI_matrix', activation_convolved');
 % Omforma korrelationsmappen till samma storlek som originalbilden
 correlation_map = reshape(correlation_values, [128, 128, 37]);
 
-% Ange tröskelvärde för korrelationen (bestäm gräns för aktiverade voxlar, justera threshold?)
+% Ange tröskelvärde för korrelationen 
 threshold = 0.5;
 activated_voxels = correlation_map > threshold;
 
@@ -58,7 +58,7 @@ z_coords = z_coords * 3.9;
 
 % Plotta 3D-figur för aktiverade voxlar
 figure;
-isosurface(x_coords, y_coords, z_coords, activated_voxels, 0.5);  % 0.5 tröskelvärde (striktare, eller ska vi ha samma på båda?)
+isosurface(x_coords, y_coords, z_coords, activated_voxels, 0.5);  % 0.5 tröskelvärde
 colormap jet;
 colorbar;
 title('Aktiverade voxlar markerade');
@@ -68,13 +68,7 @@ zlabel('Z (mm)');
 axis equal;
 view(3);
 
-% Öka den spatiala upplösningen genom “zero-padding”. Använd
-% Matlabfunktionen padarray. (Detta verkar vara VG-nivå, ska vi göra det?)
-    % Spec_Im_padded=padarray(Spec_Im,[x y z]);
-
-
-% Undersök correlationen bättre så vi kan redovisa det
-% (känns som att detta är fett lågt, har jag gjort fel?
+% Undersök korrelationen och skriv ut
 mean_corr = mean(correlation_values);
 std_corr = std(correlation_values);
 disp(['Medelvärde: ', num2str(mean_corr)]);
@@ -85,8 +79,6 @@ histogram(correlation_values,50);
 xlabel('Korrelationsvärde');
 ylabel('Antal voxlar');
 title('Korrelation mellan voxlar och aktiveringssignal');
-
-% Visualisera mer resultat
 
 %plottar mittenslicen av ofiltrerad och filtrerad
 mid_slice = round(size(iFFT_images,3)/2);
