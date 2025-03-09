@@ -99,6 +99,7 @@ xlabel('Korrelationsvärde');
 ylabel('Antal voxlar');
 title('Korrelation mellan voxlar och aktiveringssignal');
 
+figure;
 %visar alla filtrerade slices i z-axeln
 for slice_idx = 1:37
     subplot(6, 7, slice_idx);
