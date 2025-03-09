@@ -80,6 +80,12 @@ std_corr = std(correlation_values);
 disp(['Medelvärde: ', num2str(mean_corr)]);
 disp(['Standardavvikelse: ', num2str(std_corr)]);
 
+figure;
+histogram(correlation_values,50); 
+xlabel('Korrelationsvärde');
+ylabel('Antal voxlar');
+title('Korrelation mellan voxlar och aktiveringssignal');
+
 % Visualisera mer resultat
 
 %plottar mittenslicen av ofiltrerad och filtrerad
@@ -93,11 +99,6 @@ subplot(1,2,2);
 imagesc(abs(iFFT_filtered(:,:,mid_slice))); 
 title('Filtrerad');
 
-figure;
-histogram(correlation_values,50); 
-xlabel('Korrelationsvärde');
-ylabel('Antal voxlar');
-title('Korrelation mellan voxlar och aktiveringssignal');
 
 figure;
 %visar alla filtrerade slices i z-axeln
