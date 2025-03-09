@@ -10,7 +10,7 @@ iFFT_images = fftshift(ifftn(ifftshift(kSpace)));
 
 % Gaussiskt lågpassfilter för att filtrera brus (justera a?)
 [x, y, z] = meshgrid(linspace(-1, 1, 128), linspace(-1, 1, 128), linspace(-1, 1, 37));
-a = 0.05;
+a = 0.08;
 filter = exp(-(x.^2*a^2 + y.^2*a^2 + z.^2*a^2) / (2*a^3));
 
 % Applicera filtret i frekvensplanet
@@ -99,4 +99,11 @@ xlabel('Korrelationsvärde');
 ylabel('Antal voxlar');
 title('Korrelation mellan voxlar och aktiveringssignal');
 
-
+%visar alla filtrerade slices i z-axeln
+for slice_idx = 1:37
+    subplot(6, 7, slice_idx);
+    imagesc(abs(iFFT_filtered(:,:,slice_idx))); 
+    axis equal; axis off;
+    title(['Slice ', num2str(slice_idx)]);
+  
+end    
